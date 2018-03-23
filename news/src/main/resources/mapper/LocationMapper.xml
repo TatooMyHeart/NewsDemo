@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.news.demo.dao.LocationDao">
+    <resultMap id="BaseResultMap" type="com.news.demo.model.Location">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="imgid" jdbcType="INTEGER" property="imgid" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id, imgid
+    </sql>
+    <!--location里面只有六条数据，id就对应位置,imgid可以置空-->
+
+    <select id="findIdByImgid" parameterType="INTEGER" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM location
+        WHERE imgid = #{imgid,jdbcType=INTEGER}
+    </select>
+
+    <select id="findImgidById" parameterType="INTEGER" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM location
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="findOrderList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM location
+        ORDER BY id ASC
+    </select>
+
+
+    <update id="updateImgidById" parameterType="INTEGER">
+        UPDATE location SET  imgid=#{imgid,jdbcType=INTEGER} WHERE id=#{id,jdbcType=INTEGER}
+    </update>
+
+
+</mapper>

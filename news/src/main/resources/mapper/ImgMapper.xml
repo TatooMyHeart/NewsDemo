@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.news.demo.dao.ImgDao">
+    <resultMap id="BaseResultMap" type="com.news.demo.model.Img">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, path
+    </sql>
+
+
+    <!--<select id="findPathWithoutNow" parameterType="INTEGER" resultMap="BaseResultMap">-->
+        <!--SELECT-->
+        <!--<include refid="Base_Column_List" />-->
+        <!--FROM imgs-->
+        <!--WHERE NOT (id = #{id,jdbcType=INTEGER})-->
+    <!--</select>-->
+
+    <select id="findAllPath" parameterType="INTEGER" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM imgs
+    </select>
+
+    <select id="findIdByPath" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM imgs
+        WHERE path = #{path,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findPathById" parameterType="INTEGER" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM imgs
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertImg" parameterType="java.lang.String">
+        INSERT  INTO imgs (path) VALUES
+        (#{path,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteImgByPath" parameterType="java.lang.String">
+        DELETE FROM imgs WHERE path=#{path,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

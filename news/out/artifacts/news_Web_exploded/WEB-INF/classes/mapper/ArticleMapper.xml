@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.news.demo.dao.ArticleDao">
+    <resultMap id="BaseResultMap" type="com.news.demo.model.Article">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="reporter" jdbcType="VARCHAR" property="reporter" />
+        <result column="photographer" jdbcType="VARCHAR" property="photographer" />
+        <result column="department" jdbcType="VARCHAR" property="department" />
+        <result column="newsType" jdbcType="INTEGER" property="newsType" />
+        <result column="newsRole" jdbcType="INTEGER" property="newsRole" />
+        <result column="click" jdbcType="INTEGER" property="click" />
+        <result column="essay" jdbcType="CLOB" property="essay" />
+        <result column="cover" jdbcType="VARCHAR" property="cover" />
+        <result column="summary" jdbcType="VARCHAR" property="summary" />
+        <result column="newsStatus" jdbcType="VARCHAR" property="newsStatus" />
+        <result column="submitAt" jdbcType="DATE" property="submitAt" />
+        <result column="publicAt" jdbcType="DATE" property="publicAt" />
+    </resultMap>
+
+    <resultMap id="BulletinResultMap" type="com.news.demo.model.Article">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="cover" jdbcType="VARCHAR" property="cover" />
+        <result column="summary" jdbcType="VARCHAR" property="summary" />
+        <result column="publicAt" jdbcType="DATE" property="publicAt" />
+    </resultMap>
+
+    <resultMap id="NoticeResultMap" type="com.news.demo.model.Article">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="newsType" jdbcType="INTEGER" property="newsType" />
+        <result column="newsRole" jdbcType="INTEGER" property="newsRole" />
+        <result column="publicAt" jdbcType="DATE" property="publicAt" />
+    </resultMap>
+
+    <resultMap id="VerifyResultMap" type="com.news.demo.model.Article">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="reporter" jdbcType="VARCHAR" property="reporter" />
+        <result column="newsStatus" jdbcType="VARCHAR" property="newsStatus" />
+        <result column="submitAt" jdbcType="DATE" property="submitAt" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title,reporter,photographer,department,newsType,newsRole,click,essay,cover,summary,newsStatus,submitAt,publicAt
+    </sql>
+
+    <insert id="insertArticle" parameterType="com.news.demo.model.Article">
+        INSERT  INTO articles (title, reporter, photographer, department, newsType
+        , newsRole, click, essay, cover, summary, newsStatus, submitAt, publicAt) VALUES
+        (#{title,jdbcType=VARCHAR},#{reporter,jdbcType=VARCHAR},#{photographer,jdbcType=VARCHAR},#{department,jdbcType=VARCHAR}
+        ,#{newsType,jdbcType=INTEGER},#{newsRole,jdbcType=INTEGER},#{click,jdbcType=INTEGER},#{essay,jdbcType=CLOB}
+        ,#{cover,jdbcType=VARCHAR},#{summary,jdbcType=VARCHAR},#{newsStatus,jdbcType=VARCHAR},#{submitAt,jdbcType=DATE}
+        ,#{publicAt,jdbcType=DATE})
+    </insert>
+
+    <update id="updateArticle" parameterType="com.news.demo.model.Article">
+        UPDATE articles SET title=#{title,jdbcType=VARCHAR},
+        reporter=#{reporter,jdbcType=VARCHAR},
+        photographer=#{photographer,jdbcType=VARCHAR},
+        department=#{department,jdbcType=VARCHAR},
+        newsType=#{newsType,jdbcType=INTEGER},
+        newsRole=#{newsRole,jdbcType=INTEGER},
+        click=#{click,jdbcType=INTEGER},
+        essay=#{essay,jdbcType=CLOB},
+        cover=#{cover,jdbcType=VARCHAR},
+        summary=#{summary,jdbcType=VARCHAR}
+        WHERE id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="addClick" parameterType="INTEGER">
+        UPDATE articles SET click=click+1 WHERE id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="findArticleById" parameterType="INTEGER" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from articles
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <!--审核列表-->
+    <select id="findVerifyList" resultMap="VerifyResultMap">
+        select id,title,reporter,submitAt,newsStatus
+        from articles ORDER BY submitAt DESC
+    </select>
+    <!--新闻动态列表-->
+    <select id="findBulletinList" resultMap="BulletinResultMap">
+        select id,title,cover,publicAt,summary
+        from articles WHERE newsStatus='通过' ORDER BY publicAt DESC LIMIT 4
+    </select>
+    <!--速报-->
+    <!--新闻公告-->
+    <select id="findNoticeList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsType=1 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--精彩回顾-->
+    <select id="findReviewList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsType=2 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--活动预告-->
+    <select id="findForenoticeList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsType=3 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电辨坛-->
+    <select id="findDebateList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=1 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电舞台-->
+    <select id="findArtList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=2 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电故事-->
+    <select id="findStoryList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=3 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电影院-->
+    <select id="findMovieList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=4 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电栋梁-->
+    <select id="findRidgepoleList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=5 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电讲坛-->
+    <select id="findRostrumList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=6 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--成电百家-->
+    <select id="findThinkerList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=7 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+    <!--其他-->
+    <select id="findOtherList" resultMap="NoticeResultMap">
+        select id,title,publicAt,newsType,newsRole
+        from articles WHERE newsRole=8 AND newsStatus='通过' ORDER BY publicAt DESC LIMIT 10
+    </select>
+
+
+    <delete id="deleteArticle" parameterType="INTEGER">
+        DELETE FROM articles WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+
+</mapper>
